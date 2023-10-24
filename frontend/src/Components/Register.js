@@ -61,7 +61,7 @@ export default function Register(){
                     variant="outlined"
                     fullWidth
                     margin="normal"
-                    sx={{ borderRadius: 2 }} // Rounded corners
+                    sx={{ borderRadius: 2 }} 
                     onChange={e => setFormData({ ...formData, email: e.target.value })}
                 />
                 <TextField
