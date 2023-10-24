@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from .serializers import UserProfileSerializer, LoginSerializer
 from .tokenauthentication import JWTAuthentication
 from rest_framework import status
+from .models import UserProfile
 
 
 @api_view(['POST'])
@@ -30,3 +31,12 @@ def login(request):
             'user': serializer.data
         }, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+@api_view(['GET'])
+def get_all_users(request):
+    users = UserProfile.objects.all()
+    serializer = UserProfileSerializer(users, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
