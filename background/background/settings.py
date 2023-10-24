@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'corsheaders',
     'rest_framework',
     'chatroom'
@@ -64,6 +65,15 @@ REST_FRAMEWORK = {
         'chatroom.tokenauthentication.JWTAuthentication'
     ]
 }
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
 
 TEMPLATES = [
     {
@@ -82,7 +92,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'background.wsgi.application'
-
+ASGI_APPLICATION = 'background.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
