@@ -40,3 +40,14 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     
     def __str__(self) -> str:
         return self.email
+    
+
+
+class ChatModel(models.Model):
+    sender = models.CharField(max_length=100, default=None)
+    message = models.TextField(null=True, blank=True)
+    thread_name = models.CharField(null=True, blank=True, max_length=50)
+    timestemp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return self.message    
