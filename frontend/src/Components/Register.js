@@ -1,115 +1,114 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Container, CssBaseline, Avatar, Box } from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { TextField, Button, Container, Typography, Box, Avatar } from '@mui/material';
+import ChatIcon from '@mui/icons-material/Chat'; 
 
-export default function Register() {
+export default function Register(){
     const BASE_URL = "http://127.0.0.1:8000/";
     const [formData, setFormData] = useState({
         "email": "",
         "first_name": "",
         "last_name": "",
         "password": ""
-    });
-    const [error, setError] = useState(null);
+    }
 
-    const handleFormSubmit = (event) => {
-        event.preventDefault();
-
-        fetch(`${BASE_URL}register/`, {
+    )
+    const handleFormSubmit = () =>{
+        fetch(`${BASE_URL}register/`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(formData)
         })
-        .then(async response => {
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.error);
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
             console.log(data);
-            setError(null);
         })
         .catch(error => {
-            console.error('There was a problem:', error.message);
-            setError(error.message);
-        });
-    };
-
+            console.log(error);
+        })
+    }
     return (
-        <Container component="main" maxWidth="xs">
-            <CssBaseline />
-            <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                    <LockOutlinedIcon />
+        <Container 
+            maxWidth="sm"
+            sx={{
+                height: '100vh',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                backgroundImage: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)', 
+            }}
+        >
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    padding: 3,
+                    borderRadius: 3,
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)', 
+                }}
+            >
+                <Avatar sx={{ m: 2, backgroundColor: 'secondary.main' }}>
+                    <ChatIcon fontSize="large" />
                 </Avatar>
-                <Typography component="h1" variant="h5">
-                    Sign up
-                </Typography>
-                <Box component="form" noValidate sx={{ mt: 3 }} onSubmit={handleFormSubmit}>
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="email"
-                        label="Email Address"
-                        name="email"
-                        autoComplete="email"
-                        onChange={e => setFormData({...formData, email: e.target.value})}
-                        autoFocus
-                    />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="first_name"
-                        label="First Name"
-                        type="text"
-                        id="first_name"
-                        onChange={e => setFormData({...formData, first_name: e.target.value})}
-                        autoComplete="given-name"
-                    />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="last_name"
-                        label="Last Name"
-                        type="text"
-                        id="last_name"
-                        onChange={e => setFormData({...formData, last_name: e.target.value})}
-                        autoComplete="family-name"
-                    />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="password"
-                        label="Password"
-                        type="password"
-                        id="password"
-                        onChange={e => setFormData({...formData, password: e.target.value})}
-                        autoComplete="new-password"
-                    />
-                    {error && 
-                        <Typography variant="body2" color="error" sx={{ mt: 2 }}>
-                            {error}
-                        </Typography>
-                    }
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        sx={{ mt: 3, mb: 2 }}
-                    >
-                        Sign Up
-                    </Button>
-                </Box>
+                <Typography variant="h4" sx={{ mb: 2 }}>Join the Chat</Typography>
+                <TextField
+                    id="email"
+                    type="email"
+                    label="Email"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    sx={{ borderRadius: 2 }} // Rounded corners
+                    onChange={e => setFormData({ ...formData, email: e.target.value })}
+                />
+                <TextField
+                    id="first_name"
+                    type="text"
+                    label="First Name"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    sx={{ borderRadius: 2 }}
+                    onChange={e => setFormData({ ...formData, first_name: e.target.value })}
+                />
+                <TextField
+                    id="last_name"
+                    type="text"
+                    label="Last Name"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    sx={{ borderRadius: 2 }}
+                    onChange={e => setFormData({ ...formData, last_name: e.target.value })}
+                />
+                <TextField
+                    id="password"
+                    type="password"
+                    label="Password"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    sx={{ borderRadius: 2 }}
+                    onChange={e => setFormData({ ...formData, password: e.target.value })}
+                />
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    fullWidth
+                    sx={{ mt: 2, py: 1.5, borderRadius: 2 }}
+                    onClick={handleFormSubmit}
+                >
+                    Register
+                </Button>
             </Box>
         </Container>
     );
-}
+};
+
+
+
+
+
