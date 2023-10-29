@@ -8,6 +8,8 @@ from .serializers import UserProfileSerializer, LoginSerializer
 from .tokenauthentication import JWTAuthentication
 from rest_framework import status
 from .models import UserProfile
+from django.http import JsonResponse
+
 
 
 @api_view(['POST'])
@@ -20,18 +22,23 @@ def register_user(request):
 
 
 
+
 @api_view(['POST'])
 def login(request):
     serializer = LoginSerializer(data=request.data)
     if serializer.is_valid():
         token = JWTAuthentication.generate_token(payload=serializer.data)
-        return Response({
-            "message": "Login Successfuly",
+        
+        response = JsonResponse({
+            "message": "Login Successfully",
             'token': token,
             'user': serializer.data
         }, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+        response.set_cookie('token', token, httponly=True, secure=False)  
+        return response
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 

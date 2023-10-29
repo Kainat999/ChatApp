@@ -1,12 +1,38 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
-from .models import ChatModel
+# from .models import ChatModel
+
+# class PersonalChatConsumer(AsyncWebsocketConsumer):
+#     async def connect(self):
+#         my_id = self.scope['user'].id
+#         other_user_id = self.scope['url_route']['kwargs']['id']
+#         if int(my_id) > int(other_user_id):
+#             self.room_name = f'{my_id}-{other_user_id}'
+#         else:
+#             self.room_name = f'{other_user_id}-{my_id}'
+
+#         self.room_group_name = 'chat_%s' % self.room_name
+
+#         await self.channel_layer.group_add(
+#             self.room_group_name,
+#             self.channel_name
+#         )    
+
+#         await self.accept()
+
+
 
 class PersonalChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         my_id = self.scope['user'].id
-        other_user_id = self.scope['url_route']['kwargs']['id']
+        other_user_id = self.scope['url_route']['kwargs'].get('id', None)
+
+        if not (my_id and other_user_id):
+            print(f"Connection rejected. my_id: {my_id}, other_user_id: {other_user_id}")
+            await self.close(code=4000)  
+            return
+
         if int(my_id) > int(other_user_id):
             self.room_name = f'{my_id}-{other_user_id}'
         else:
@@ -20,6 +46,7 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
         )    
 
         await self.accept()
+
 
     async def receive(self, text_data=None, bytes_data=None):
         data = json.load(text_data)
@@ -48,13 +75,15 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
         ))  
 
     async def disconnect(self, code):
-        self.channel_layer.group_discard(
-            self.room_group_name,
-            self.channel_name
-        )
+        if hasattr(self, 'room_group_name'):
+            await self.channel_layer.group_discard(
+                self.room_group_name,
+                self.channel_name
+                )
 
     @database_sync_to_async
     def save_message(self, username, thread_name, message):
+        from .models import ChatModel 
         ChatModel.objects.create(
             sender=username, message=message, thread_name=thread_name
         )
