@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 
 function getTokenFromCookie() {
-    document.cookie = 'test123'
     const tokenRow = document.cookie.split('; ').find(row => row.startsWith('token='));
     console.log(document.cookie);
     return tokenRow ? tokenRow.split('=')[1] : null;
