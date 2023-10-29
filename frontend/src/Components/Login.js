@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Paper, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
-
+import { useNavigate } from 'react-router-dom'; 
 
 export default function Login() {
     const BASE_URL = "http://127.0.0.1:8000/";
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         "email": "",
         "password": ""
@@ -21,6 +23,10 @@ export default function Login() {
         .then(response => response.json())
         .then(data => {
             console.log(data);
+            if (data.token) { 
+                localStorage.setItem('token', data.token);
+                navigate('/chat'); 
+            }
         })
         .catch(error => {
             console.log(error);

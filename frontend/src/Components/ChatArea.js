@@ -4,14 +4,17 @@ import MessageInput from './MessageInput';
 import withAuthentication from './utils/withAuthentication';
 
 
-function ChatArea({ selectedUserId }) {
+export default function ChatArea({ selectedUserId }) {
     const [socket, setSocket] = useState(null);
     const [messages, setMessages] = useState([]);
 
+
     useEffect(() => {
-        if(!selectedUserId) return; 
+        if(!selectedUserId) return;
+    
+        const token = document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1];
         
-        const ws = new WebSocket(`ws://localhost:8000/ws/chat/${selectedUserId}/`); 
+        const ws = new WebSocket(`ws://localhost:8000/ws/chat/${selectedUserId}/?token=${token}`);
         
         ws.onopen = () => {
             console.log('Connected to the WebSocket');
@@ -27,7 +30,7 @@ function ChatArea({ selectedUserId }) {
         return () => {
             ws.close();
         };
-    }, [selectedUserId]);  
+    }, [selectedUserId]); 
 
     return (
         <div className='chat-area'>
@@ -49,4 +52,4 @@ function ChatArea({ selectedUserId }) {
 }
 
 
-export default withAuthentication(ChatArea)
+// export default withAuthentication(ChatArea)
