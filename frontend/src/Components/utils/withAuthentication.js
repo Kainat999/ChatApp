@@ -65,7 +65,7 @@ const withAuthentication = (WrappedComponent) => {
         } else {
             return (
                 <div>
-                    {/* <Navigate to="/login" /> */}
+                    <Navigate to="/login" />
                     {errorMessage && <p>{errorMessage}</p>}
                 </div>
             );

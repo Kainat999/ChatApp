@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Paper, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 
 function setCookie(name, value, days) {
     let expires = "";
@@ -11,6 +11,12 @@ function setCookie(name, value, days) {
         expires = "; expires=" + date.toUTCString();
     }
     document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
 export default function Login() {
@@ -33,9 +39,28 @@ export default function Login() {
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            if (data.token) { 
-                setCookie('token', data.token, 3);  
-                navigate('/chat'); 
+            if (data.token) {
+                setCookie('token', data.token, { sameSite: 'None', secure: false }, 3);
+                const token = getCookie('token');
+                if (token) {
+                    fetch(`${BASE_URL}auth/verify/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                        },
+                    })
+                    .then(verifyResponse => {
+                        if (verifyResponse.status === 200) {
+                            navigate('/chat');
+                        } else {
+                            console.log('Token verification failed');
+                        }
+                    })
+                    .catch(verifyError => {
+                        console.log(verifyError);
+                    });
+                }
             }
         })
         .catch(error => {
@@ -50,22 +75,22 @@ export default function Login() {
             </Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12}>
-                    <TextField 
-                        id="email" 
-                        type='email' 
-                        label="Email" 
-                        variant="outlined" 
-                        fullWidth 
+                    <TextField
+                        id="email"
+                        type='email'
+                        label="Email"
+                        variant="outlined"
+                        fullWidth
                         onChange={e => setFormData({...formData, email: e.target.value})}
                     />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField 
-                        id="password" 
-                        type='password' 
-                        label="Password" 
-                        variant="outlined" 
-                        fullWidth 
+                    <TextField
+                        id="password"
+                        type='password'
+                        label="Password"
+                        variant="outlined"
+                        fullWidth
                         onChange={e => setFormData({...formData, password: e.target.value})}
                     />
                 </Grid>
