@@ -34,7 +34,7 @@ export default function Login() {
         .then(data => {
             console.log(data);
             if (data.token) { 
-                setCookie('token', data.token, 3);  // Setting the token in cookie for 3 days
+                setCookie('token', data.token, 3);  
                 navigate('/chat'); 
             }
         })
