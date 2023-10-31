@@ -4,7 +4,7 @@ import MessageInput from './MessageInput';
 import withAuthentication from './utils/withAuthentication';
 
 
-export default function ChatArea({ selectedUserId }) {
+function ChatArea({ selectedUserId }) {
     const [socket, setSocket] = useState(null);
     const [messages, setMessages] = useState([]);
 
@@ -52,4 +52,4 @@ export default function ChatArea({ selectedUserId }) {
 }
 
 
-// export default withAuthentication(ChatArea)
+export default withAuthentication(ChatArea)

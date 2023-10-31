@@ -3,6 +3,16 @@ import { TextField, Button, Typography, Paper, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom'; 
 
+function setCookie(name, value, days) {
+    let expires = "";
+    if (days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
 export default function Login() {
     const BASE_URL = "http://127.0.0.1:8000/";
     const navigate = useNavigate();
@@ -24,7 +34,7 @@ export default function Login() {
         .then(data => {
             console.log(data);
             if (data.token) { 
-                localStorage.setItem('token', data.token);
+                setCookie('token', data.token, 3);  // Setting the token in cookie for 3 days
                 navigate('/chat'); 
             }
         })

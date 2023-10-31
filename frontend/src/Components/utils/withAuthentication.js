@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import axios from 'axios'; 
 
 function getTokenFromCookie() {
-    const tokenRow = document.cookie.split('; ').find(row => row.startsWith('token='));
-    console.log(document.cookie);
-    return tokenRow ? tokenRow.split('=')[1] : null;
+    const token = Cookies.get("token");
+    return token || null;
 }
 
 const withAuthentication = (WrappedComponent) => {
@@ -22,34 +23,37 @@ const withAuthentication = (WrappedComponent) => {
                 return;
             }
 
-            fetch('http://127.0.0.1:8000/auth/verify', {
-                method: 'POST',
-                credentials: 'include',
+            axios.post('http://127.0.0.1:8000/auth/verify/', {}, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                
+                withCredentials: true
             })
             .then(response => {
-                if (!response.ok) {
+                if (response.status !== 200) {
+                    console.error(`Network response not ok. Status: ${response.status}, Text: ${response.statusText}`);
                     throw new Error("Network response was not ok");
                 }
-                return response.json();
+                return response.data;
             })
             .then(data => {
                 if (data.isAuthenticated) {
                     setIsAuthenticated(true);
+                    setLoading(false);
                 } else {
                     setIsAuthenticated(false);
                     setErrorMessage(data.message);
+                    setLoading(false);
                 }
             })
             .catch(error => {
                 console.error(error);
                 setErrorMessage(error.message);
+                setLoading(false);
             })
             .finally(() => setLoading(false));
+            
         }, []);
 
         if (loading) {

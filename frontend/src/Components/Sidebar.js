@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import withAuthentication from './utils/withAuthentication';
 
-export default function Sidebar({ onUserSelect }) {
+function Sidebar({ onUserSelect }) {
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
@@ -53,5 +53,5 @@ export default function Sidebar({ onUserSelect }) {
     );
 }
 
-// export default withAuthentication(Sidebar)
+export default withAuthentication(Sidebar)
 
