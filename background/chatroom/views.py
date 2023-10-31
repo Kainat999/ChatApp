@@ -37,14 +37,17 @@ def login(request):
         response_data = {
             "message": "Login Successfully",
             'token': token,
-            'user': serializer.data
+            'user': {
+                'id': user_instance.id,
+                'email': user_instance.email,
+                'first_name': user_instance.first_name,
+                'last_name': user_instance.last_name
+            }
         }
 
         response = Response(response_data, status=status.HTTP_201_CREATED)
         response.set_cookie('token', token, httponly=True, samesite='None')
         return response
-
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
