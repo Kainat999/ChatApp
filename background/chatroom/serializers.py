@@ -47,5 +47,6 @@ class LoginSerializer(serializers.Serializer):
             )
         return{
             "email": user.email,
-            "id": user.id
+            "id": user.id,
+            "user": user
         }

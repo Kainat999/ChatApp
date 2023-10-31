@@ -17,11 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from chatroom.views import register_user, login, get_all_users
+from rest_framework_simplejwt.views import TokenVerifyView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/', register_user, name="register"),
+    path('auth/verify/', TokenVerifyView.as_view(), name="verify"),
     path('login/', login, name="login"),
     path('get_all_users/', get_all_users, name="get_all_users"),
+
 
 ]

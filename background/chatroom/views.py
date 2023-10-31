@@ -1,11 +1,11 @@
 import statistics
 from django.shortcuts import render
-
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.models import User
 # Create your views here.
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import UserProfileSerializer, LoginSerializer
-from .tokenauthentication import JWTAuthentication
 from rest_framework import status
 from .models import UserProfile
 from django.http import JsonResponse
@@ -23,23 +23,28 @@ def register_user(request):
 
 
 
+from rest_framework.response import Response
+
 @api_view(['POST'])
 def login(request):
     serializer = LoginSerializer(data=request.data)
+    
     if serializer.is_valid():
-        token = JWTAuthentication.generate_token(payload=serializer.data)
+        user_instance = serializer.validated_data['user']
+        refresh_token = RefreshToken.for_user(user_instance)
+        token = str(refresh_token.access_token)
         
-        response = JsonResponse({
+        response_data = {
             "message": "Login Successfully",
             'token': token,
             'user': serializer.data
-        }, status=status.HTTP_201_CREATED)
+        }
 
-        response.set_cookie('token', token, httponly=True, secure=False)  
+        response = Response(response_data, status=status.HTTP_201_CREATED)
+        response.set_cookie('token', token, httponly=True, samesite='None')
         return response
-    
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])

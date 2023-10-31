@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework_simplejwt',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -62,10 +63,11 @@ CORS_ALLOWED_ORIGINS = [
 ROOT_URLCONF = 'background.urls'
 AUTH_USER_MODEL = "chatroom.UserProfile"
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES':[
-        'chatroom.tokenauthentication.JWTAuthentication'
-    ]
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
 }
+
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
@@ -74,7 +76,8 @@ CHANNEL_LAYERS = {
         },
     },
 }
-
+SESSION_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_SAMESITE = "None"
 
 TEMPLATES = [
     {
